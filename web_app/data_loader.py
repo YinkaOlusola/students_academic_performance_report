@@ -4,7 +4,7 @@ import streamlit as st
 @st.cache_data
 def load_data():
     # Load the Excel file
-    file_path = "../data/Student_Data.xlsx"
+    file_path = "Student_Data.xlsx"
     
     # Load the individual sheets into dataframes
     Academic_Performance = pd.read_excel(file_path, sheet_name='Academic_Performance')
