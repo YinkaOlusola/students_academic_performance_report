@@ -51,8 +51,3 @@ st.write("This is where the visualizations and detailed analysis will be display
 
 
 
-def app(data):
-    st.title("Enrollment Trend")
-    st.write("Welcome to the Enrollment Trend Report")
-
-    st.write(data['Biodata'])

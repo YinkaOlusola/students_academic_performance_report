@@ -39,8 +39,4 @@ Interact with the report to gain a comprehensive understanding of academic
 performance and track the progress of graduating students by their final CGPA.
 """)
 
-def app(data):
-    st.title("Overall Performance")
-    st.write("Welcome to the Overall Perforomance Report")
 
-    st.write(data['Biodata'])

@@ -41,8 +41,3 @@ progress of graduating students by their final CGPA.
 """)
 
 
-def app(data):
-    st.title("Comparative Analysis")
-    st.write("Welcome to the Comparative Analysis")
-
-    st.write(data['Biodata'])

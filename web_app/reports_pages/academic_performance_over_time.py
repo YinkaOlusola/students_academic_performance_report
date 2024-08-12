@@ -108,8 +108,4 @@ st.write(filtered_df)
 
 
 
-def app(data):
-    st.title("Academic Performance")
-    st.write("Welcome to the Academic Performance Page")
 
-    st.write(data['Biodata'])

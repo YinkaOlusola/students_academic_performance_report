@@ -100,9 +100,3 @@ st.markdown("""
 
 
 
-
-def app(data):
-    st.title("Home")
-    st.write("Welcome to the Home Page")
-
-    st.write(data["Biodata"].head())

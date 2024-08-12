@@ -45,8 +45,3 @@ st.write("This is where the visualizations and detailed analysis will be display
 
 
 
-def app(data):
-    st.title("Course Performance")
-    st.write("Welcome to the Comparative Analysis")
-
-    st.write(data['Biodata'])

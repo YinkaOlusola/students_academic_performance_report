@@ -46,10 +46,3 @@ st.write("This is where the visualizations and detailed analysis will be display
 
 
 
-
-def app(data):
-    st.title("Students Registration")
-    st.write("Welcome to the Students Registration Report")
-    session = st.sidebar.selectbox("Session", ["1990-1991", "1991-1992"])
-
-    st.write(data['Biodata'])

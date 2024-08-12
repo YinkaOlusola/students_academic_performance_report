@@ -39,9 +39,3 @@ st.write("This is where the visualizations and detailed analysis will be display
 
 
 
-
-def app(data):
-    st.title("Grade Distribution")
-    st.write("Welcome to the Grade Distribution Report")
-
-    st.write(data['Biodata'])
