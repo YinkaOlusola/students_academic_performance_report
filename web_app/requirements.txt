@@ -3,3 +3,5 @@ joblib
 nltk
 scikit-learn
 openpyxl
+matplotlib
+seaborn
