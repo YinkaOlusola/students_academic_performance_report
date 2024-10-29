@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
-
 import streamlit as st
 from data_loader import load_data
 
@@ -69,7 +68,7 @@ st.write("# Data Visualizations")
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 
-######### Total Number of Registered Students ############
+#-------------------------- Total Number of Registered Students  ----------------------------
 
 # Count the number of distinct Matric_Number
 distinct_students = Registration['Matric_Number'].nunique()
@@ -123,35 +122,62 @@ st.markdown("<br><br><br><br>", unsafe_allow_html=True)
 
 #-------------------------- Number of Students by State of Origin -----------------------------
 
+def plot_students_by_state(Biodata):
+    # Replace missing or unknown values with 'Unknown'
+    Biodata['State_of_Origin'] = Biodata['State_of_Origin'].replace('-', 'Unknown')
+
+    # Grouping by State_of_Origin and counting the number of students per state
+    state_counts = Biodata['State_of_Origin'].value_counts().reset_index()
+    state_counts.columns = ['State_of_Origin', 'Number_of_Students']
+
+    # Sort the dataframe by Number_of_Students in descending order
+    state_counts = state_counts.sort_values(by='Number_of_Students', ascending=True)
+
+    # Create a slider for adjusting the height of the plot
+    plot_height = st.slider('Select plot height For clearer view',
+                            min_value=400, max_value=1000, value=600, step=50)
+
+    # Create a horizontal bar chart using Plotly
+    fig = px.bar(state_counts, 
+                 x='Number_of_Students', 
+                 y='State_of_Origin', 
+                 orientation='h',
+                 title='Number of Students by State of Origin',
+                 color_discrete_sequence=['#DE6A73'],  # Same color for all bars
+                 text='Number_of_Students',
+                 labels={'Number_of_Students': 'Number of Students', 'State_of_Origin': 'State of Origin'})
+
+    # Update layout for better readability
+    fig.update_layout(
+        xaxis_title='Number of Students',
+        yaxis_title='State of Origin',
+        xaxis=dict(showgrid=True),  # Show grid lines
+        height=plot_height,  # Adjustable height based on the slider
+        width=1000,  # Adjustable width
+        showlegend=False  # Remove the legend
+    )
+
+    # Add data labels to the bars
+    fig.update_traces(texttemplate='%{text}', textposition='outside')
+
+    # Display the plot in Streamlit
+    st.plotly_chart(fig)
+
+# Example usage in Streamlit
 st.write(
-    f"""
+    """
     <div>
         <h4>Number of Students by State of Origin</h4>
     </div>
     """,
     unsafe_allow_html=True
-    )
+)
 
-# Replace missing or unknown values with 'Unknown'
-Biodata['State_of_Origin'] = Biodata['State_of_Origin'].replace('-', 'Unknown')
+# Call the function with the Biodata DataFrame
+plot_students_by_state(Biodata)
 
-# Grouping by State_of_Origin and counting the number of students per state
-state_counts = Biodata['State_of_Origin'].value_counts().sort_values(ascending=False)
 
-# Create a horizontal bar chart
-plt.figure(figsize=(12, 10))
-bars = sns.barplot(x=state_counts.values, y=state_counts.index, color="#DE6A73")
 
-# Add labels to the bars
-for index, value in enumerate(state_counts):
-    plt.text(value + 1, index, str(value), va='center', ha='left', fontsize=8, color='black')
-
-plt.title('Number of Students by State of Origin')
-plt.xlabel('Number of Students')
-plt.ylabel('State of Origin')
-
-# Display the plot in Streamlit
-st.pyplot(plt)
 
 
 st.markdown("<br><br><br><br>", unsafe_allow_html=True)
@@ -169,6 +195,7 @@ st.write(
     )
 
 
+# Assuming Biodata is already loaded as a DataFrame
 # Calculate the counts of each gender and marital status
 gender_counts = Biodata['Sex'].value_counts()
 marital_status_counts = Biodata['Marital_Status'].value_counts()
@@ -181,28 +208,28 @@ def create_doughnut_chart(labels, values, title, annotation):
         hole=0.5,  # Creates the hole for the doughnut chart
         marker=dict(colors=['#DE6A73', '#E8D166']),
         textinfo='label+percent',  # Show label and percent in the chart
-        textfont=dict(size=12, color="black"),  # Adjust font size for text inside arcs
+        textfont=dict(size=12, color="white"),  # Adjust font size for text inside arcs
         hoverinfo='label+value',
-        showlegend=False
+        showlegend=True  # Show legend for interactivity
     )])
-
     
     fig.update_layout(
         title_text=title,
         title_font_size=14,  # Increase font size for the title
-        title_font_color="black",  # Change title font color
+        title_font_color="white",  # Change title font color
         annotations=[dict(
             text=annotation, 
             x=0.5, y=0.5, 
-            font_size=20, 
+            font_size=16, 
             showarrow=False, 
-            font_color="black"  # Change this color to improve visibility
+            font_color="white"  # Change this color to improve visibility
         )],
-        paper_bgcolor="white",  # Background color of the entire figure
-        plot_bgcolor="white",  # Background color of the plotting area
+        #paper_bgcolor="black",  # Background color of the entire figure
+        plot_bgcolor="black",  # Background color of the plotting area
         margin=dict(t=60, b=40, l=40, r=40),  # Adjust the margins as needed
-        height=400,  # Height of the box
-        width=400,   # Width of the box
+        height=300,  # Height of the box
+        width=300,   # Width of the box
+        font_color="white"  # Font color for text outside the chart
     )
     
     return fig
@@ -215,59 +242,61 @@ marital_status_fig = create_doughnut_chart(marital_status_counts.index, marital_
 col1, col2 = st.columns(2)
 
 with col1:
-
-    st.plotly_chart(gender_fig)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.plotly_chart(gender_fig, use_container_width=True)
 
 with col2:
+    st.plotly_chart(marital_status_fig, use_container_width=True)
 
-    st.plotly_chart(marital_status_fig)
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 st.markdown("<br><br><br><br>", unsafe_allow_html=True)
 
 
-# ----------------------------- Number of Students by Nationality ---------------------------------
+# ----------------------- Number of Students by Nationality and Religion ------------------------
 
-st.write(
-    f"""
-    <div>
-        <h4>Number of Students by Nationality and Religion</h4>
-    </div>
-    """,
-    unsafe_allow_html=True
+# Function to plot vertical bar chart using Plotly
+def plot_vertical_bar_chart(dataframe, column, color):
+    # Calculate value counts for the specified column
+    counts = dataframe[column].value_counts().reset_index()
+    counts.columns = [column, 'Number of Students']
+
+    # Create the bar chart using Plotly
+    fig = px.bar(counts, x=column, y='Number of Students', text='Number of Students',
+                 color_discrete_sequence=[color])
+
+    # Update layout for a non-white background and adjust text colors
+    fig.update_layout(
+        plot_bgcolor='rgba(0, 0, 0, 0)',  # Transparent background
+        paper_bgcolor='rgba(0, 0, 0, 0)',  # Transparent background
+        font=dict(color='white'),  # White text color
+        title={
+            'text': f'\nNumber of Students by {column}\n',
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        title_font_size=16,
+        xaxis_title=column,
+        yaxis_title='Number of Students',
+        yaxis=dict(showgrid=False, zeroline=False),
+        xaxis=dict(showgrid=False, zeroline=False)
     )
 
+    # Add data labels on top of the bars
+    fig.update_traces(textposition='outside', textfont=dict(size=12, color='white'))
 
-def plot_vertical_bar_chart(dataframe, column, color):
-    plt.figure(figsize=(6, 4))
-    counts = dataframe[column].value_counts()
-    sns.barplot(x=counts.index, y=counts.values, palette=[color])
-    plt.xlabel(column)
-    plt.ylabel('Number of Students')
-    plt.title(f'Students by {column}')
-    for p in plt.gca().patches:
-        plt.annotate(f'{p.get_height()}', (p.get_x() + p.get_width() / 2, p.get_height() + 0.2),
-                     va='bottom', ha='center', fontsize=10, color='black')
-
+    return fig
 
 # Create two columns for side-by-side layout
 col1, col2 = st.columns(2)
 
 # Plot for Nationality
 with col1:
-
-    plot_vertical_bar_chart(Biodata, 'Nationality', '#DE6A73')
-    st.pyplot(plt.gcf())
-    plt.close()  # Close the plot to avoid overlap
+    fig1 = plot_vertical_bar_chart(Biodata, 'Nationality', '#DE6A73')
+    st.plotly_chart(fig1)
 
 # Plot for Religion
 with col2:
-
-    plot_vertical_bar_chart(Biodata, 'Religion', '#DE6A73')
-    st.pyplot(plt.gcf())
-    plt.close()  # Close the plot to avoid overlap
-
-
-
+    fig2 = plot_vertical_bar_chart(Biodata, 'Religion', '#DE6A73')
+    st.plotly_chart(fig2)

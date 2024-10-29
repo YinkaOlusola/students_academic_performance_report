@@ -5,8 +5,6 @@ import streamlit as st
 base_dir = os.path.dirname(__file__)
 file_path = os.path.join(base_dir, 'Student_Data.xlsx')
 
-#file_path = "Student_Data.xlsx"
-
 @st.cache_data
 def load_data():
     # Load the Excel file
